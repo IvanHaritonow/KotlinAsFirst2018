@@ -68,7 +68,16 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = n.toString().length
+fun digitNumber(n: Int): Int {
+    if (n == 0) return 1
+    var i = 0
+    var num = n
+    while (num > 0) {
+        i++
+        num /= 10
+    }
+    return i
+}
 
 /**
  * Простая
@@ -78,8 +87,8 @@ fun digitNumber(n: Int): Int = n.toString().length
  */
 fun fib(n: Int): Int {
     if (n == 2) return 1
-    var a: Int = 1
-    var b: Int = 1
+    var a = 1
+    var b = 1
     var c: Int
 
     for (i in 3..n) {
@@ -296,29 +305,23 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-//Недоделал
+
 fun squareSequenceDigit(n: Int): Int {
-    var i = 0
-    var num
-    var result = 0
-    if (n == 1) result = 1
-    if (n == 2) result = 4
-    if (n == 3) result = 9
-    if (n > 3 || n < 14) {
-        for (num in 4..13) {
-            if (num == n || num + 1 == n) {
-                num += 2
-                i++
-            }
-        }
-        result = if (num == n) {
-            sqr(i + 3)
-        } else {
-            sqr(i + 4)
-        }
+    var num = 0
+    var lenght = 0
+    var square = 0
+    var check = 0
+    while (lenght < n) {
+        check++
+        square = sqr(check)
+        lenght += digitNumber(square)
     }
-    if (n > 14) result = 0
-    return result
+    for (i in 1..lenght - n) {
+        square /= 10
+        num = square % 10
+    }
+    if (lenght == n) return square % 10
+    return num
 }
 
 /**
@@ -330,4 +333,20 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var num = 0
+    var lenght = 0
+    var fibo = 0
+    var check = 0
+    while (lenght < n) {
+        check++
+        fibo = fib(n)
+        lenght = digitNumber(fibo)
+    }
+    for (i in 1..lenght - n) {
+        fibo /= 10
+        num = fibo % 10
+    }
+    if (lenght == n) return fibo % 10
+    return num
+}
