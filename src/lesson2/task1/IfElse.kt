@@ -69,9 +69,7 @@ fun ageDescription(age: Int) = when {
     age in 6..19 || age % 100 in 6..19 -> "$age лет"
     age % 10 == 1 -> "$age год"
     age % 10 in 2..4 -> "$age года"
-    else -> {
-        "$age лет"
-    }
+    else -> "$age лет"
 }
 
 /**
@@ -84,18 +82,16 @@ fun ageDescription(age: Int) = when {
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
-    val halfTime: Double
-    val firstWay: Double = t1 * v1
-    val secondWay: Double = t2 * v2
-    val thirdWay: Double = t3 * v3
-    val fullWay: Double = firstWay + secondWay + thirdWay
-    val halfWay: Double = fullWay / 2
-    halfTime = when {
+    val firstWay = t1 * v1
+    val secondWay = t2 * v2
+    val thirdWay = t3 * v3
+    val fullWay = firstWay + secondWay + thirdWay
+    val halfWay = fullWay / 2
+    return when {
         firstWay >= halfWay -> halfWay / v1
         firstWay + secondWay >= halfWay -> (halfWay - firstWay) / v2 + t1
         else -> (halfWay - firstWay - secondWay) / v3 + t1 + t2
     }
-    return halfTime
 }
 
 /**
@@ -109,22 +105,22 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int {
-    return when {
-        kingX == rookX1 && kingX == rookX2 -> 3
-        kingX == rookX1 && kingY == rookY2 -> 3
-        kingY == rookY1 && kingY == rookY2 -> 3
-        kingY == rookY1 && kingX == rookX2 -> 3
+                       rookX2: Int, rookY2: Int): Int =
+        when {
+            kingX == rookX1 && kingX == rookX2 -> 3
+            kingX == rookX1 && kingY == rookY2 -> 3
+            kingY == rookY1 && kingY == rookY2 -> 3
+            kingY == rookY1 && kingX == rookX2 -> 3
 
-        kingX == rookX1 -> 1
-        kingY == rookY1 -> 1
+            kingX == rookX1 -> 1
+            kingY == rookY1 -> 1
 
-        kingX == rookX2 -> 2
-        kingY == rookY2 -> 2
+            kingX == rookX2 -> 2
+            kingY == rookY2 -> 2
 
-        else -> 0
-    }
-}
+            else -> 0
+        }
+
 
 /**
  * Простая
@@ -138,16 +134,14 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int {
-    return when {
-        (kingX == rookX || kingY == rookY) && (abs(kingY - kingX) == abs(bishopY - bishopX)) -> 3
-        kingX == rookX || kingY == rookY -> 1
-        abs(kingX - kingY) == abs(bishopX - bishopY) || abs(kingY - kingX) == abs(bishopY - bishopX) ||
-                abs(kingY - kingX) == abs(bishopX - bishopY) || abs(kingX - kingY) == abs(bishopY - bishopX) -> 2
-        abs(kingX + kingY) == abs(bishopY + bishopX) -> 2
-        else -> 0
-    }
-}
+                          bishopX: Int, bishopY: Int): Int =
+        when {
+            (kingX == rookX || kingY == rookY) && abs(bishopX - kingX) == abs(bishopY - kingY) -> 3
+            kingX == rookX || kingY == rookY -> 1
+            abs(bishopX - kingX) == abs(bishopY - kingY) -> 2
+            else -> 0
+        }
+
 
 /**
  * Простая
@@ -158,10 +152,13 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val maximal = maxOf(a, b, c)
+    val minimal = minOf(a, b, c)
+    val middle = (a + b + c) - (minimal + maximal)
     return when {
-        a + b < c || a + c < b || b + c < a -> -1
-        sqr(a) == sqr(b) + sqr(c) || sqr(b) == sqr(a) + sqr(c) || sqr(c) == sqr(b) + sqr(a) -> 1
-        ((a < b && a < c) || (b < c && b < a) || (c < a && c < b)) && (a == b || a == c || b == c) -> 0
+        a + b < c || a + c < b || c + b < a -> -1
+        sqr(minimal) + sqr(middle) == sqr(maximal) -> 1
+        sqr(minimal) + sqr(middle) > sqr(maximal) -> 0
         else -> 2
     }
 }
@@ -175,11 +172,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    val maximal = maxOf(a, c)
+    val minimal = minOf(b, d)
     return when {
-        (a <= c) && (b <= d) -> b - c
-        (a <= c) && (b >= d) -> d - c
-        (a >= c) && (b <= d) -> b - a
-        (a >= c) && (b >= d) && (d >= a) -> d - a
+        minimal - maximal > -1 -> minimal - maximal
         else -> -1
     }
 }
