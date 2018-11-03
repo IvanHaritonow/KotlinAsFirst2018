@@ -50,9 +50,7 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
 
 
 fun daysInMonth(month: Int, year: Int): Int {
-    var monthlenght: Int = 0
-    /** IDEA не даёт сделать её val */
-
+    var monthlenght = 0
     if (month == 2) {
         monthlenght = when {
             year % 400 == 0 -> 29
@@ -94,4 +92,12 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
-        r * s >= a * c || r * s >= a * b || r * s >= c * b
+        when {
+            a <= r && b <= s -> true
+            b <= r && a <= s -> true
+            a <= r && c <= s -> true
+            c <= r && a <= s -> true
+            b <= r && c <= s -> true
+            c <= r && b <= s -> true
+            else -> false
+        }
