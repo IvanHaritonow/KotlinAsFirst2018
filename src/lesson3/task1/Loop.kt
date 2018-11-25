@@ -154,13 +154,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var check = 0
-    for (i in 1..n) {
-        if (m % i == 0 && n % i == 0) check = i
-    }
-    return check == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean = nod(m, n) == 1
 
 /**
  * Простая
@@ -169,12 +163,12 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
+
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var check = 0
     for (i in 1..sqrt(n.toDouble()).toInt()) {
-        if ((sqr(i) <= n) && (sqr(i) >= m)) check = i
+        if ((sqr(i) <= n) && (sqr(i) >= m)) return true
     }
-    return check != 0
+    return false
 }
 
 private operator fun Boolean.compareTo(n: Int): Int {

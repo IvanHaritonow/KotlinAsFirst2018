@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson3.task1.digitNumber
+import lesson3.task1.isPrime
 import lesson3.task1.minDivisor
 import lesson3.task1.resultIs
 import java.lang.Math.pow
@@ -176,13 +177,12 @@ fun polynom(p: List<Double>, x: Double): Double = p.withIndex().fold(0.0) { resu
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
-    return if (list.isNotEmpty()) {
+    if (list.isNotEmpty()) {
         for (i in 1 until list.size) {
             list[i] += list[i - 1]
         }
-        list
-    } else
-        list
+    }
+    return list
 }
 
 /**
@@ -192,20 +192,12 @@ fun accumulate(list: MutableList<Double>): MutableList<Double> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun isEasy(n: Int): Boolean {
-    var k = 0
-    for (i in 1..n) {
-        if (n % i == 0) k++
-    }
-    return k == 2
-}
-
 fun factorize(n: Int): List<Int> {
     var num = n
     var i = 2
     val list = mutableListOf<Int>()
     while (num > 1) {
-        if (num % i == 0 && isEasy(i)) {
+        if (num % i == 0) {
             list.add(i)
             num /= i
         } else i++
@@ -231,12 +223,11 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  */
 fun convert(n: Int, base: Int): List<Int> {
     var i = n
-    val systemCount = base
     val list = mutableListOf<Int>()
     if (i == 1) list.add(1) else {
         while (i > 0) {
-            list.add(i % systemCount)
-            i /= systemCount
+            list.add(i % base)
+            i /= base
         }
     }
     return list.reversed()
@@ -250,49 +241,20 @@ fun convert(n: Int, base: Int): List<Int> {
  * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
-fun valName(a: Int): String {
-    return when (a) {
-        10 -> "a"
-        11 -> "b"
-        12 -> "c"
-        13 -> "d"
-        14 -> "e"
-        15 -> "f"
-        16 -> "g"
-        17 -> "h"
-        18 -> "i"
-        19 -> "j"
-        20 -> "k"
-        21 -> "l"
-        22 -> "m"
-        23 -> "n"
-        24 -> "o"
-        25 -> "p"
-        26 -> "q"
-        27 -> "r"
-        28 -> "s"
-        29 -> "t"
-        30 -> "u"
-        31 -> "v"
-        32 -> "w"
-        33 -> "x"
-        34 -> "y"
-        35 -> "z"
-        36 -> "aa"
-        else -> a.toString()
-    }
+fun valName(a: Int): Char = when (a) {
+    in 0..9 -> a.toChar()
+    else -> (a + 87).toChar()
 }
 
 fun convertToString(n: Int, base: Int): String {
-    val systemCount = base
     var num = n
     var result = ""
 
     if (num == 0) result = "0" else {
         while (num > 0) {
-            val i = num % systemCount
+            val i = num % base
             result += if (i < 10) i.toString() else valName(i)
-            num /= systemCount
+            num /= base
         }
     }
     return result.reversed()
@@ -456,9 +418,11 @@ fun russian(n: Int): String {
         res1 += first[i]
     } else {
         i = 10
-        if (num % 100 / 10 > 0) {
-            while (num % 100 - num % 10 != digit[i]) i++
-            word += words2[i] + " "
+        word += if ((num % 100 > 0) || (num % 10 > 0) && num % 100 >= num % 10) {
+            while ((num % 100 - num % 10) != digit[i]) i++
+            words2[i] + " "
+        } else {
+            " "
         }
         i = 19
         while (num % 10 != digit[i]) i++
@@ -466,16 +430,16 @@ fun russian(n: Int): String {
         res1 += word
     }
 
-
-
-    when {
-        num.toString().isEmpty() -> word = "ноль"
-        num.toString().length == 1 -> word = res1
-        num.toString().length == 2 -> word = res1
-        num.toString().length == 3 -> word = "$res2 $res1"
-        num.toString().length == 4 -> word = "$res3 $res2 $res1"
-        num.toString().length == 5 -> word = "$res3 $res2 $res1"
-        num.toString().length == 6 -> word = "$res4 $res3 $res2 $res1"
+    word = when {
+        num.toString().length == 1 -> res1
+        num.toString().length == 2 -> res1
+        num.toString().length == 3 -> "$res2 $res1"
+        num.toString().length == 4 -> "$res3 $res2 $res1"
+        num.toString().length == 5 -> "$res3 $res2 $res1"
+        num.toString().length == 6 -> "$res4 $res3 $res2 $res1"
+        else -> {
+            "ноль"
+        }
     }
 
     while (word.contains("  ")) {
