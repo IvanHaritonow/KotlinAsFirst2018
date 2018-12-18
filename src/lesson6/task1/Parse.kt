@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import kotlin.math.exp
+
 /**
  * Пример
  *
@@ -49,12 +52,10 @@ fun main(args: Array<String>) {
         val seconds = timeStrToSeconds(line)
         if (seconds == -1) {
             println("Введённая строка $line не соответствует формату ЧЧ:ММ:СС")
-        }
-        else {
+        } else {
             println("Прошло секунд с начала суток: $seconds")
         }
-    }
-    else {
+    } else {
         println("Достигнут <конец файла> в процессе чтения строки. Программа прервана")
     }
 }
@@ -71,7 +72,20 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val enter = str.split(" ")
+    if (enter.size != 3) return ""
+    if (enter[2].length != 4) return ""
+    val year = enter[2].toInt()
+    val month = 1 + months.indexOf(enter[1])
+    val day = enter[0].toInt()
+    if (month == 0) return ""
+    if (day !in 1..daysInMonth(month, year)) return ""
+    return String.format("%02d.%02d.%d", day, month, year)
+}
+
+val months = listOf("января", "февраля", "марта", "апреля",
+        "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 
 /**
  * Средняя
@@ -83,7 +97,18 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val enter = digital.split(".")
+    if (enter.size != 3) return ""
+    if (enter[2].length != 4) return ""
+    val year = enter[2].toInt()
+    val month = enter[1].toInt()
+    val day = enter[0].toInt()
+    if (month == 0) return ""
+    if (day !in 1..daysInMonth(month, year)) return ""
+    return String.format("%d %s %d", day, months[month - 1], year)
+
+}
 
 /**
  * Средняя
@@ -156,7 +181,30 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    var output = ""
+    try {
+        val list = description.split("; ").map {
+            it.split(" ")[0] to it.split(" ")[1].toDouble()
+        }
+        var maxVal = -1.0
+
+        list.forEach { if (it.second < 0) throw Exception() }
+
+        list.forEach {
+            if (maxVal < it.second) {
+                output = it.first
+                maxVal = it.second
+            }
+        }
+
+    } catch (e: Exception) {
+        return ""
+    }
+
+    return output
+}
+
 
 /**
  * Сложная
