@@ -59,7 +59,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     val txt = File(inputName).readText()
 
     substrings.forEach {
-        res[i] = it.toRegex(RegexOption.IGNORE_CASE).findAll(txt).toSet().size
+        res[it] = it.toRegex(RegexOption.IGNORE_CASE).findAll(txt).toSet().size
     }
 
     return res
